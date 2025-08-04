@@ -83,7 +83,14 @@ function closeModal() {
 // 处理表单提交
 function handleFormSubmit(e) {
     e.preventDefault();
-    
+
+        // 调试表单元素
+    console.log('表单元素:', Array.from(e.target.elements).map(el => ({
+        name: el.name,
+        value: el.value,
+        files: el.files
+    })));
+
     const formData = new FormData(e.target);
     const record = {
         keywords: formData.get('keywords'),
@@ -105,6 +112,7 @@ function handleFormSubmit(e) {
     }
 
     saveData();
+    console.log(localStorage.getItem(STORAGE_KEY))
     renderTable();
     closeModal();
 }
@@ -182,6 +190,7 @@ function deleteRecord(index) {
 // 保存数据到本地存储
 function saveData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(currentData));
+    console.log(localStorage.getItem(STORAGE_KEY))
 }
 
 // 处理搜索
