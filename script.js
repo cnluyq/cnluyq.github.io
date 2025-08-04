@@ -17,6 +17,18 @@ function setupEventListeners() {
     document.getElementById('dataForm').addEventListener('submit', handleFormSubmit);
 }
 
+function formatDate(isoString) {
+    const date = new Date(isoString);
+    return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}
+
 // 渲染数据表格
 function renderTable(data = currentData) {
     const tableBody = document.getElementById('dataTable');
@@ -42,6 +54,8 @@ function renderTable(data = currentData) {
                 ${item.others}
                 ${renderFileBadges(item.othersFiles)}
             </td>
+            <td>${formatDate(item.createdAt)}</td>
+            <td>${formatDate(item.updatedAt)}</td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button onclick="editRecord(${index})" class="text-blue-600 hover:text-blue-900 mr-3" data-tooltip="编辑">
                     <i class="fas fa-edit"></i>
@@ -83,13 +97,7 @@ function closeModal() {
 // 处理表单提交
 function handleFormSubmit(e) {
     e.preventDefault();
-
-        // 调试表单元素
-    console.log('表单元素:', Array.from(e.target.elements).map(el => ({
-        name: el.name,
-        value: el.value,
-        files: el.files
-    })));
+    const now = new Date().toISOString();
 
     const formData = new FormData(e.target);
     const record = {
@@ -101,7 +109,10 @@ function handleFormSubmit(e) {
         others: formData.get('others'),
         rootCauseFiles: getFileInfo('rootCauseFile'),
         solutionsFiles: getFileInfo('solutionsFile'),
-        othersFiles: getFileInfo('othersFile')
+        othersFiles: getFileInfo('othersFile'),
+        createdAt: formData.get('recordId') ? 
+                  currentData[formData.get('recordId')].createdAt : now,
+        updatedAt: now
     };
 
     const recordId = formData.get('recordId');
