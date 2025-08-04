@@ -100,6 +100,7 @@ function handleFormSubmit(e) {
     const now = new Date().toISOString();
 
     const formData = new FormData(e.target);
+    const recordId = formData.get('recordId');
     const record = {
         keywords: formData.get('keywords'),
         problemTitle: formData.get('problemTitle'),
@@ -115,7 +116,6 @@ function handleFormSubmit(e) {
         updatedAt: now
     };
 
-    const recordId = formData.get('recordId');
     if (recordId) {
         currentData[recordId] = record;
     } else {
