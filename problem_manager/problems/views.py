@@ -154,3 +154,19 @@ from django.contrib.auth import logout
 def logout_view(request):
     logout(request)
     return redirect('problem_list')
+
+from django.http import JsonResponse
+
+def problem_detail_json(request, pk):
+    p = get_object_or_404(Problem, pk=pk)
+    return JsonResponse({
+        'id': p.id,
+        'key_words': p.key_words,
+        'title': p.title,
+        'description': p.description,
+        'root_cause': p.root_cause,
+        'solutions': p.solutions,
+        'others': p.others,
+        'create_time': p.create_time.strftime('%Y-%m-%d %H:%M'),
+        'update_time': p.update_time.strftime('%Y-%m-%d %H:%M')
+    })
