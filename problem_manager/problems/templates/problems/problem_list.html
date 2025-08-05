@@ -1,0 +1,102 @@
+{% extends 'problems/base.html' %}
+{% block content %}
+<h2>Problem List</h2>
+
+<form method="get" class="mb-3">
+  <div class="input-group">
+    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search...">
+    <button class="btn btn-outline-secondary">Search</button>
+  </div>
+</form>
+
+{% if user.is_authenticated %}
+<div class="mb-3">
+  <a class="btn btn-primary" href="{% url 'problem_add' %}">Add Problem</a>
+  <a class="btn btn-success" href="{% url 'export_json' %}">Export JSON</a>
+  <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#importModal">Import JSON</button>
+</div>
+{% endif %}
+
+<table class="table table-bordered table-hover align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>No.</th>
+      <th>Key Words</th>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Root Cause</th>
+      <th>Solutions</th>
+      <th>Others</th>
+      <th>Create Time</th>
+      <th>Update Time</th>
+      {% if user.is_authenticated %}<th>Actions</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+  {% for p in problems %}
+    <tr>
+      <td>{{ p.id }}</td>
+      <td>{{ p.key_words|truncatechars:20 }}</td>
+      <td>{{ p.title|truncatechars:20 }}</td>
+      <td>{{ p.description|truncatechars:30 }}</td>
+      <td>
+        {{ p.root_cause|truncatechars:20 }}
+        {% if p.root_cause_file %}
+          <a href="{{ p.root_cause_file.url }}" target="_blank" class="ms-1">
+            <i class="bi bi-paperclip"></i>
+          </a>
+        {% endif %}
+      </td>
+      <td>
+        {{ p.solutions|truncatechars:20 }}
+        {% if p.solutions_file %}
+          <a href="{{ p.solutions_file.url }}" target="_blank" class="ms-1">
+            <i class="bi bi-paperclip"></i>
+          </a>
+        {% endif %}
+      </td>
+      <td>
+        {{ p.others|truncatechars:20 }}
+        {% if p.others_file %}
+          <a href="{{ p.others_file.url }}" target="_blank" class="ms-1">
+            <i class="bi bi-paperclip"></i>
+          </a>
+        {% endif %}
+      </td>
+      <td>{{ p.create_time|date:"Y-m-d H:i" }}</td>
+      <td>{{ p.update_time|date:"Y-m-d H:i" }}</td>
+      {% if user.is_authenticated %}
+      <td>
+        <a class="btn btn-sm btn-warning" href="{% url 'problem_edit' p.id %}">Edit</a>
+        <a class="btn btn-sm btn-danger" href="{% url 'problem_delete' p.id %}"
+           onclick="return confirm('Delete?')">Delete</a>
+      </td>
+      {% endif %}
+    </tr>
+  {% empty %}
+    <tr><td colspan="10" class="text-center">No data</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<!-- Import Modal -->
+<div class="modal fade" id="importModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="post" action="{% url 'import_json' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Import JSON</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="file" name="file" accept=".json" required class="form-control">
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
