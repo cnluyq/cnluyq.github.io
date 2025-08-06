@@ -156,7 +156,6 @@ def logout_view(request):
     return redirect('problem_list')
 
 from django.http import JsonResponse
-
 def problem_detail_json(request, pk):
     p = get_object_or_404(Problem, pk=pk)
     return JsonResponse({
@@ -170,3 +169,29 @@ def problem_detail_json(request, pk):
         'create_time': p.create_time.strftime('%Y-%m-%d %H:%M'),
         'update_time': p.update_time.strftime('%Y-%m-%d %H:%M')
     })
+
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
+
+def superuser_required(view_func):
+    return user_passes_test(lambda u: u.is_superuser)(view_func)
+
+@superuser_required
+def user_list(request):
+    users = User.objects.all().order_by('-date_joined')
+    return render(request, 'problems/user_list.html', {'users': users})
+
+@superuser_required
+def user_toggle_active(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if user != request.user:            # 防止自锁
+        user.is_active = not user.is_active
+        user.save()
+    return redirect('user_list')
+
+@superuser_required
+def user_delete(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if user != request.user:  # 防止删除自己
+        user.delete()
+    return redirect('user_list')
