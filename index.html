@@ -1,129 +1,113 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>问题跟踪系统</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .file-upload {
-            border: 2px dashed #cbd5e0;
-            transition: all 0.3s;
-        }
-        .file-upload:hover {
-            border-color: #4299e1;
-        }
-        [data-tooltip]::after {
-            content: attr(data-tooltip);
-            /* 工具提示样式 */
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cnluyq · Algorithms & Code</title>
+
+  <!-- 亮色主题 -->
+  <style>
+    :root {
+      --accent: #007acc;
+      --bg: #ffffff;
+      --card: #f5f7fa;
+      --border: #e1e4e8;
+      --text: #24292f;
+      --muted: #656d76;
+      --mono: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header, section, footer {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+    h1, h2 { font-weight: 600; }
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .tagline { color: var(--muted); margin-top: .25rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .card h3 { font-size: 1.1rem; margin-bottom: .5rem; }
+    .card p  { font-size: .9rem; color: var(--muted); }
+    .badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: .75rem;
+      background: #eef1f5;
+      color: var(--text);
+      padding: .15rem .5rem;
+      margin: .2rem .2rem 0 0;
+      border-radius: 12px;
+    }
+    footer {
+      font-size: .8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    /* 让 GitHub Stats 卡片也适配亮色 */
+    img[alt="GitHub Stats"] { max-width: 100%; height: auto; }
+  </style>
 </head>
-<body class="bg-gray-50">
-    <div class="container mx-auto px-4 py-8">
-        <header class="mb-8">
-            <h1 class="text-3xl font-bold text-blue-600">问题跟踪系统</h1>
-            <div class="flex justify-between items-center mt-4">
-                <div class="relative w-64">
-                    <input type="text" id="searchInput" placeholder="输入关键词搜索..." 
-                           class="w-full pl-10 pr-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-300">
-                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                </div>
-                <button id="addBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
-                    <i class="fas fa-plus mr-2"></i>添加记录
-                </button>
-                <button id="exportBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition">
-                    <i class="fas fa-file-export mr-2"></i>导出JSON
-                </button>
-            </div>
-        </header>
 
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keywords</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Problem Title</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descriptions</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Root Cause</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Solutions</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Others</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CreatedAt</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UpdatedAt</th>
-                        <th class="px-12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="dataTable" class="bg-white divide-y divide-gray-200">
-                    <!-- 动态数据将在这里渲染 -->
-                </tbody>
-            </table>
-        </div>
+<body>
+  <header>
+    <h1>WELCOME</h1>
+    <p class="tagline">Algorithm lover • C programmer • Pythonista • Open Source</p>
+  </header>
+
+  <section>
+    <h2>About</h2>
+    <p>
+      我是一名C语言程序员；人工智能爱好者；LLM训练工程师；区块链技术比特币爱好者；数理教师；前沿技术爱好者；户外大自然活动爱好者
+    </p>
+  </section>
+
+  <section>
+    <h2>Featured Repos</h2>
+
+    <div class="card">
+      <h3><a href="https://github.com/cnluyq/bitcoinbook" target="_blank">bitcoinbook</a></h3>
+      <p>Mastering Bitcoin 2nd Edition - Programming the Open Blockchain </p>
+      <span class="badge">Book</span>
     </div>
 
-    <!-- 添加/编辑模态框 -->
-    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b px-6 py-4">
-                <h3 class="text-lg font-semibold">添加新记录</h3>
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form id="dataForm" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="hidden" id="recordId" name="recordId">
-                <div class="col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Keywords</label>
-                    <input type="text" id="keywords" name="keywords" required class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300">
-                </div>
-                <div class="col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Problem Title</label>
-                    <input type="text" id="problemTitle" name="problemTitle" required class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300">
-                </div>
-                <div class="col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Problem Descriptions</label>
-                    <textarea id="problemDesc" name="problemDesc" rows="3" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Root Cause</label>
-                    <textarea id="rootCause" name="rootCause" rows="3" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"></textarea>
-                    <div class="file-upload mt-2 p-4 rounded-lg text-center cursor-pointer" onclick="document.getElementById('rootCauseFile').click()">
-                        <i class="fas fa-cloud-upload-alt text-2xl text-blue-400 mb-2"></i>
-                        <p class="text-sm text-gray-500">点击上传附件</p>
-                        <input type="file" id="rootCauseFile" name="rootCauseFile" class="hidden" onchange="previewFile(this, 'rootCauseFiles')">
-                        <div id="rootCauseFiles" class="mt-2 text-xs"></div>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Solutions</label>
-                    <textarea id="solutions" name="solutions" rows="3" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"></textarea>
-                    <div class="file-upload mt-2 p-4 rounded-lg text-center cursor-pointer" onclick="document.getElementById('solutionsFile').click()">
-                        <i class="fas fa-cloud-upload-alt text-2xl text-blue-400 mb-2"></i>
-                        <p class="text-sm text-gray-500">点击上传附件</p>
-                        <input type="file" id="solutionsFile" name="solutionsFile" class="hidden" onchange="previewFile(this, 'solutionsFiles')">
-                        <div id="solutionsFiles" class="mt-2 text-xs"></div>
-                    </div>
-                </div>
-                <div class="col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Others</label>
-                    <textarea id="others" name="others" rows="2" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"></textarea>
-                    <div class="file-upload mt-2 p-4 rounded-lg text-center cursor-pointer" onclick="document.getElementById('othersFile').click()">
-                        <i class="fas fa-cloud-upload-alt text-2xl text-blue-400 mb-2"></i>
-                        <p class="text-sm text-gray-500">点击上传附件</p>
-                        <input type="file" id="othersFile" name="othersFile" class="hidden" onchange="previewFile(this, 'othersFiles')">
-                        <div id="othersFiles" class="mt-2 text-xs"></div>
-                    </div>
-                </div>
-                <div class="col-span-2 flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">取消</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">保存</button>
-                </div>
-            </form>
-        </div>
+    <div class="card">
+      <h3><a href="https://github.com/cnluyq/Maths" target="_blank">Maths</a></h3>
+      <p>Maths knowledge and teaching</p>
+      <span class="badge">C</span>
     </div>
 
-    <script src="script.js" defer></script>
+    <div class="card">
+      <h3><a href="https://github.com/cnluyq/lore_keeper" target="_blank">lore_keeper</a></h3>
+      <p>knowledge and experience keeper</p>
+      <span class="badge">Python</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Stats</h2>
+    <p>
+      <a href="https://github.com/cnluyq">
+      </a>
+    </p>
+  </section>
+
+  <footer>
+    © 2023–now cnluyq • <a href="mailto:cnluyq@gmail.com">cnluyq@gmail.com</a>
+  </footer>
 </body>
 </html>
